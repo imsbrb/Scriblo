@@ -1,4 +1,6 @@
 import Folder from "../models/Folder.js";
+import Note from "../models/Note.js";
+
 export async function getFolders(req, res) {
 try {
 const folders = await Folder.find({ user: req.user._id }).sort({ name: 1 });
@@ -39,13 +41,18 @@ req.params.id } });
     }
 }
 export async function deleteFolder(req, res) {
-    try {
-        const folder = await Folder.findOneAndDelete({ _id: req.params.id, user: req.user._id 
+try {
+const folder = await Folder.findOneAndDelete({ _id: req.params.id, user: req.user._id 
 });
-        if (!folder) return res.status(404).json({ message: "Folder not found!" });
-        res.status(200).json({ message: "Folder deleted" });
-    } catch (error) {
-        console.error("Error in deleteFolder Controller", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+if (!folder) return res.status(404).json({ message: "Folder not found!" });
+// deleting a folder also deletes every note inside it
+const result = await Note.deleteMany({ folder: folder._id, user: req.user._id });
+res.status(200).json({
+message: `Folder and ${result.deletedCount} note(s) deleted`,
+deletedNotes: result.deletedCount
+});
+} catch (error) {
+console.error("Error in deleteFolder Controller", error);
+res.status(500).json({ message: "Internal Server Error" });
+}
 }
