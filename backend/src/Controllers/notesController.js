@@ -3,11 +3,11 @@ import Note from "../models/Note.js";
 import Folder from "../models/Folder.js";
 // trim, lowercase, drop empty and duplicate tags (max 10 tags, 20 chars each)
 function cleanTags(tags) {
-if (!Array.isArray(tags)) return [];
-const cleaned = tags
-.map((tag) => String(tag).trim().toLowerCase())
-.filter((tag) => tag.length > 0 && tag.length <= 20);
-return [...new Set(cleaned)].slice(0, 10);
+    if (!Array.isArray(tags)) return [];
+    const cleaned = tags
+        .map((tag) => String(tag).trim().toLowerCase())
+        .filter((tag) => tag.length > 0 && tag.length <= 20);
+    return [...new Set(cleaned)].slice(0, 10);
 }
 // a note can only go into a folder owned by the same user ("" or null = no folder)
 async function folderIsValid(folderId, userId) {
@@ -24,7 +24,7 @@ function escapeRegex(text) {
 export async function getAllNotes(req,res){
     try{
         const {search, folder, tag, pinned, sort} = req.query;
-        const filter = {user: req.user._id};
+        const filter = {user: req.user._id, isDeleted: false};   // notes in Trash are hidden
         if (search && search.trim()) {
             const regex = new RegExp(escapeRegex(search.trim()), "i");   // "i" = ignore case
             filter.$or = [{title: regex}, {content: regex}];
@@ -39,8 +39,7 @@ export async function getAllNotes(req,res){
         }
         if (tag) filter.tags = String(tag).toLowerCase();
         if (pinned === "true") filter.pinned = true;
-        if (pinned === "false") filter.pinned = {$ne: true};   // also matches older notes with 
-no pinned field
+        if (pinned === "false") filter.pinned = {$ne: true};   // also matches older notes with no pinned field
         // pinned notes first, then by date (newest first unless sort=oldest)
         const order = {pinned: -1, createdAt: sort === "oldest" ? 1 : -1};
         const page = Math.max(parseInt(req.query.page) || 1, 1);
@@ -57,14 +56,13 @@ no pinned field
             totalPages: Math.max(Math.ceil(total / limit), 1)
         });
     }catch(error){
-        console.error("Error in getAllNotes Controller",error);
+                console.error("Error in getAllNotes Controller",error);
         res.status(500).json({message: "Internal Server Error"});
     }
 }
-
 export async function getTags(req, res){
     try {
-        const tags = await Note.distinct("tags", {user: req.user._id});
+        const tags = await Note.distinct("tags", {user: req.user._id, isDeleted: false});
         res.status(200).json(tags.sort());
     } catch (error) {
         console.error("Error in getTags Controller", error);
@@ -73,7 +71,8 @@ export async function getTags(req, res){
 }
 export async function getNoteById(req, res){
     try {
-        const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+        const note = await Note.findOne({ _id: req.params.id, user: req.user._id, isDeleted: 
+false });
         if (!note) return res.status(404).json({message: "Note not found!"})
         res.status(200).json(note);
     } catch (error) {
@@ -116,7 +115,7 @@ export async function updateNote(req,res){
             changes.folder = folder || null;
         }
         const updatedNote=await Note.findOneAndUpdate(
-            {_id: req.params.id, user: req.user._id},
+                        {_id: req.params.id, user: req.user._id, isDeleted: false},
             changes,
             {new:true, runValidators:true}
         );
@@ -132,7 +131,8 @@ export async function updateNote(req,res){
 }
 export async function togglePin(req, res){
     try {
-        const note = await Note.findOne({_id: req.params.id, user: req.user._id});
+        const note = await Note.findOne({_id: req.params.id, user: req.user._id, isDeleted: 
+false});
         if (!note) return res.status(404).json({message: "Note not found!"});
         note.pinned = !note.pinned;
         await note.save();
@@ -142,13 +142,16 @@ export async function togglePin(req, res){
         res.status(500).json({message: "Internal Server Error"});
     }
 }
-
+// DELETE /api/notes/:id no longer removes the note; it moves it to Trash
 export async function deleteNote(req,res){
     try {
-        const deletedNote = await Note.findOneAndDelete({ _id: req.params.id, user: req.user._id 
-});
-        if (!deletedNote) return res.status(404).json({message: "Note not found!"})
-        res.status(200).json({message: "Note deleted successfully!"});
+        const note = await Note.findOneAndUpdate(
+            { _id: req.params.id, user: req.user._id, isDeleted: false },
+            { isDeleted: true, deletedAt: new Date() },
+            { new: true }
+        );
+        if (!note) return res.status(404).json({message: "Note not found!"})
+        res.status(200).json({message: "Note moved to Trash"});
     } catch (error) {
         console.error("Error in deleteNote Controller", error);
         res.status(500).json({message: "Internal Server Error"});
