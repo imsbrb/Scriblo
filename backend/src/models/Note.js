@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
-//1st step: create schema 
-//2nd step: model based on that schema
 const noteSchema = new mongoose.Schema({
 title: {type:String, required:true},
 content: {type:String, required:true},
-
 user: {
 type: mongoose.Schema.Types.ObjectId,
 ref: "User",
 required: true
-}
+},
+folder: {
+type: mongoose.Schema.Types.ObjectId,
+ref: "Folder",
+default: null
+},
+tags: { type: [String], default: [] }
 },
 {timestamps: true}
 );
