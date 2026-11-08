@@ -1,4 +1,13 @@
+import { Route, Routes, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
 const App = () => {
-    return <h1 className="text-3xl font-bold text-primary">Scriblo</h1>;
+    return (
+        <div>
+            <Routes>
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/login" element={<LoginPage />} />
+            </Routes>
+        </div>
+    );
 };
 export default App;
