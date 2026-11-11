@@ -71,15 +71,26 @@ export async function getTags(req, res){
 }
 export async function getNoteById(req, res){
     try {
-        const note = await Note.findOne({ _id: req.params.id, user: req.user._id, isDeleted: 
-false });
+    // the owner, or anyone the note is shared with, can open it
+    const note = await Note.findOne({
+            _id: req.params.id,
+            isDeleted: false,
+            $or: [{ user: req.user._id }, { "sharedWith.user": req.user._id }]
+        })
+            .populate("user", "name email")
+            .populate("sharedWith.user", "name email");
         if (!note) return res.status(404).json({message: "Note not found!"})
-        res.status(200).json(note);
+        // tell the frontend whether to show the editor or the read-only view
+        const result = note.toObject();
+        result.role = note.user._id.toString() === req.user._id ? "owner" : "viewer";
+        if (result.role === "viewer") result.sharedWith = [];   // viewers don't see the share list
+        res.status(200).json(result);
     } catch (error) {
         console.error("Error in getNoteById Controller", error);
         res.status(500).json({message: "Internal Server Error"});
     }
 }
+
 export async function createNotes(req,res){
     try{
         const {title, content, folder, tags}=req.body;
