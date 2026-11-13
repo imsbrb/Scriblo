@@ -47,7 +47,7 @@ function Signup() {
             //console.log(result);
         } catch (err) {
             console.error("Signup error:", err);
-            handleError(err.message || "Signup Failed");
+            handleError(err);
         }
     }
 

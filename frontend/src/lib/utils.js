@@ -14,10 +14,10 @@ export const handleError = (msg) => {
 
     if (typeof msg === "string") {
         errorMessage = msg;
-    } else if (msg?.message) {
-        errorMessage = msg.message;
     } else if (msg?.response?.data?.message) {
         errorMessage = msg.response.data.message;
+    } else if (msg?.message) {
+        errorMessage = msg.message;
     }
 
     toast.error(errorMessage, {
