@@ -6,10 +6,10 @@ import toast from "react-hot-toast";
 const NoteCard = ({ note, onChanged }) => {
     const handleDelete = async (e, id) => {
         e.preventDefault(); // get rid of the navigation behaviour
-        if (!window.confirm("Are you sure you want to delete this note?")) return;
+        if (!window.confirm("Move this note to Trash?")) return;
         try {
             await api.delete(`/notes/${id}`);
-            toast.success("Note deleted successfully");
+            toast.success("Note moved to Trash");
             onChanged();
         } catch (error) {
             console.log("Error in handleDelete", error);

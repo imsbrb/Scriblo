@@ -33,15 +33,15 @@ const NoteDetailPage = () => {
     }, [id]);
 
     const handleDelete = async () => {
-        if (!window.confirm("Are you sure you want to delete this note?")) return;
+        if (!window.confirm("Move this note to Trash?")) return;
 
         try {
             await api.delete(`/notes/${id}`);
-            toast.success("Note deleted");
+            toast.success("Note moved to Trash");
             navigate("/HomePage");
         } catch (error) {
             console.log("Error deleting the note:", error);
-            toast.error("Failed to delete note");
+            toast.error("Failed to move note to Trash");
         }
     };
 

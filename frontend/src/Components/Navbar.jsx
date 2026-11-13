@@ -1,28 +1,25 @@
-import { Link, useNavigate } from "react-router";
-import { PlusIcon } from "lucide-react";
+import { Link } from "react-router";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 import { isLoggedIn, logout } from "../lib/utils";
-
-
-
 const Navbar = () => {
-    const navigate = useNavigate();
-
     const handleLogout = () => {
         logout(); // clears token and redirects to /login
     };
-
     return (
         <header className="bg-base-300 border-b border-base-content/10">
             <div className="mx-auto max-w-6xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-primary font-mono tracking-tight">Scriblo</h1>
-
+                    <Link to="/HomePage" className="text-3xl font-bold text-primary font-mono tracking tight">Scriblo</Link>
                     <div className="flex items-center gap-4">
                         {isLoggedIn() ? (
                             <>
                                 <Link to={"/create"} className="btn btn-primary">
                                     <PlusIcon className="size-5" />
                                     <span>New Note</span>
+                                </Link>
+                                <Link to={"/trash"} className="btn btn-ghost">
+                                    <Trash2Icon className="size-5" />
+                                    <span className="hidden sm:inline">Trash</span>
                                 </Link>
                                 <button onClick={handleLogout} className="btn btn-outline">
                                     Logout
