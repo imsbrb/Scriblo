@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { CheckIcon, FolderIcon, FolderPlusIcon, PencilIcon, Trash2Icon, XIcon } from "lucide-react";
+import {
+    CheckIcon, FolderIcon, FolderPlusIcon, InboxIcon, NotebookIcon, PencilIcon, Trash2Icon,
+    XIcon
+} from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../lib/axios";
-const FolderSidebar = ({ folders, onFoldersChanged }) => {
+const FolderSidebar = ({ folders, selected, onSelect, onFoldersChanged }) => {
     const [newName, setNewName] = useState("");
     const [editingId, setEditingId] = useState(null);
     const [editName, setEditName] = useState("");
@@ -41,16 +44,32 @@ const FolderSidebar = ({ folders, onFoldersChanged }) => {
         try {
             const res = await api.delete(`/folders/${folder._id}`);
             toast.success(res.data.message);
+            if (selected === folder._id) onSelect("");
             onFoldersChanged();
         } catch (error) {
             showError(error, "Failed to delete folder");
         }
     };
+    // highlight the folder the notes are currently filtered by
+    const itemClass = (value) =>
+        `flex items-center gap-2 w-full text-left rounded-lg px-2 py-1 ${selected === value ? "bg-primary/15 font-semibold" : "hover:bg-base-200"
+        }`;
     return (
         <aside className="card bg-base-100 h-fit">
             <div className="card-body p-4">
                 <h2 className="font-bold text-lg">Folders</h2>
                 <ul className="space-y-1">
+                    <li>
+                        <button className={itemClass("")} onClick={() => onSelect("")}>
+                            <NotebookIcon className="size-4" /> All notes
+                        </button>
+                    </li>
+                    <li>
+                        <button className={itemClass("none")} onClick={() => onSelect("none")}>
+                            <InboxIcon className="size-4" /> No folder
+                        </button>
+                    </li>
+                    <li className="divider my-1"></li>
                     {folders.length === 0 && <li className="text-sm text-base-content/60">No folders
                         yet</li>}
                     {folders.map((folder) => (
@@ -72,11 +91,13 @@ const FolderSidebar = ({ folders, onFoldersChanged }) => {
                                     </button>
                                 </form>
                             ) : (
-                                <div className="flex items-center justify-between rounded-lg px-2 py-1 hover:bg-base-200">
-                                    <span className="flex items-center gap-2 truncate">
+                                <div className={`flex items-center justify-between rounded-lg ${selected ===
+                                    folder._id ? "bg-primary/15" : "hover:bg-base-200"}`}>
+                                    <button className="flex items-center gap-2 truncate grow text-left px-2 py-1"
+                                        onClick={() => onSelect(folder._id)}>
                                         <FolderIcon className="size-4 shrink-0" />
                                         {folder.name}
-                                    </span>
+                                    </button>
                                     <span className="flex shrink-0">
                                         <button className="btn btn-ghost btn-xs" onClick={() => startRename(folder)}
                                             title="Rename">
