@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
+import FolderSelect from "../Components/FolderSelect";
+import TagInput from "../Components/TagInput";
 
 const NoteDetailPage = () => {
     const [note, setNote] = useState(null);
@@ -52,12 +54,17 @@ const NoteDetailPage = () => {
         setSaving(true);
 
         try {
-            await api.put(`/notes/${id}`, note);
+            await api.put(`/notes/${id}`, {
+                title: note.title,
+                content: note.content,
+                folder: note.folder,
+                tags: note.tags,
+            });
             toast.success("Note updated successfully");
             navigate("/HomePage");
         } catch (error) {
             console.log("Error saving the note:", error);
-            toast.error("Failed to update note");
+            toast.error(error.response?.data?.message || "Failed to update note");
         } finally {
             setSaving(false);
         }
@@ -111,6 +118,19 @@ const NoteDetailPage = () => {
                                     value={note.content}
                                     onChange={(e) => setNote({ ...note, content: e.target.value })}
                                 />
+                            </div>
+
+                            <div className="form-control mb-4">
+                                <label className="label">
+                                    <span className="label-text">Folder</span>
+                                </label>
+                                <FolderSelect value={note.folder} onChange={(folder) => setNote({ ...note, folder })} />
+                            </div>
+                            <div className="form-control mb-4">
+                                <label className="label">
+                                    <span className="label-text">Tags</span>
+                                </label>
+                                <TagInput tags={note.tags || []} setTags={(tags) => setNote({ ...note, tags })} />
                             </div>
 
                             <div className="card-actions justify-end">
