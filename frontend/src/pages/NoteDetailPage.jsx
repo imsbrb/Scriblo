@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
 import FolderSelect from "../Components/FolderSelect";
 import TagInput from "../Components/TagInput";
+import Checklist from "../Components/Checklist";
 
 const NoteDetailPage = () => {
     const [note, setNote] = useState(null);
@@ -140,6 +141,17 @@ const NoteDetailPage = () => {
                             </div>
                         </div>
                     </div>
+
+                    <div className="card bg-base-100 mt-6">
+                        <div className="card-body">
+                            <Checklist
+                                noteId={id}
+                                items={note.checklist || []}
+                                setItems={(checklist) => setNote((prev) => ({ ...prev, checklist }))}
+                            />
+                        </div>
+                    </div>
+                    {/* ===== end of F16 new part ===== */}
                 </div>
             </div>
         </div>

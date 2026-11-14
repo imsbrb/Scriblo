@@ -45,6 +45,11 @@ const NoteCard = ({ note, onChanged }) => {
                     </button>
                 </div>
                 <p className="text-base-content/70 line-clamp-3">{note.content}</p>
+                {note.checklist?.length > 0 && (
+                    <span className="text-sm text-base-content/60">
+                        ☑ {note.checklist.filter((item) => item.done).length}/{note.checklist.length} done
+                    </span>
+                )}
                 {note.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                         {note.tags.map((tag) => (
