@@ -24,6 +24,7 @@ const HomePage = () => {
     const [isRateLimited, setIsRateLimited] = useState(false);
     const [notes, setNotes] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
     const [folders, setFolders] = useState([]);
     const [tags, setTags] = useState([]);
     const [filters, setFilters] = useState(emptyFilters);
@@ -38,6 +39,7 @@ const HomePage = () => {
             const res = await api.get("/notes", { params });
             setNotes(res.data.notes);
             setTotalPages(res.data.totalPages);
+            setTotal(res.data.total);
             setIsRateLimited(false);
         } catch (error) {
             if (error.response?.status === 429) {
@@ -94,6 +96,7 @@ const HomePage = () => {
                     selected={filters.folder}
                     onSelect={(folder) => updateFilters({ folder })}
                     onFoldersChanged={handleFoldersChanged}
+                    noteCount={total}
                 />
                 <main>
                     <NoteFilters filters={filters} tags={tags} onChange={updateFilters} />

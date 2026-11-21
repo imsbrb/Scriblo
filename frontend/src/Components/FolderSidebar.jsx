@@ -14,7 +14,7 @@ const readOpen = () => {
     }
 };
 
-const FolderSidebar = ({ folders, selected, onSelect, onFoldersChanged }) => {
+const FolderSidebar = ({ folders, selected, onSelect, onFoldersChanged, noteCount }) => {
     const [open, setOpen] = useState(readOpen);
     const [newName, setNewName] = useState("");
     const [editingId, setEditingId] = useState(null);
@@ -98,7 +98,7 @@ const FolderSidebar = ({ folders, selected, onSelect, onFoldersChanged }) => {
                 <div className={`flex items-center w-full ${open ? "justify-between" : "justify-center"}`}>
                     {open && (
                         <h2 className="text-2xl leading-none">
-                            My Notes <span className="font-sans text-sm font-semibold align-middle">({folders.length})</span>
+                            My Notes <span className="font-sans text-sm font-semibold align-middle">({noteCount})</span>
                         </h2>
                     )}
                     <button
