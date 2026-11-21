@@ -1,3 +1,88 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ---------- Scriblo retro theme ---------- */
+body {
+    background-color: #e3efc9;
+    color: #000;
+}
+
+/* page wrappers are transparent so the background shapes show */
+.min-h-screen.bg-base-200 {
+    background-color: transparent;
+}
+
+/* groovy headings */
+h1,
+h2,
+.card-title {
+    font-family: "Shrikhand", serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* boxes: thick black outline + hard shadow */
+.card {
+    border: 3px solid #000;
+    box-shadow: 6px 6px 0 #000;
+}
+
+a.card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #000;
+}
+
+/* buttons: uppercase, spaced, pressable */
+.btn {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0 #000;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.btn-outline {
+    background-color: #fff;
+    color: #000;
+}
+
+.btn-outline:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn-ghost,
+.btn-xs,
+.btn-sm.btn-square {
+    border-color: transparent;
+    box-shadow: none;
+    letter-spacing: normal;
+}
+
+/* form fields */
+.input,
+.textarea,
+.select {
+    border: 2px solid #000 !important;
+    background-color: #fff;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+    outline: none;
+    box-shadow: 3px 3px 0 #000;
+}
+
+/* tags */
+.badge {
+    border: 2px solid #000;
+    font-weight: 600;
+}

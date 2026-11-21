@@ -9,11 +9,14 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { isLoggedIn } from "./lib/utils";
 import Navbar from "./Components/Navbar";
+import Shapes from "./Components/Shapes";
 const App = () => {
     const location = useLocation();
     const hideNavbar = location.pathname === "/login" || location.pathname === "/signup";
     return (
         <>
+            <Shapes />
+            <div className="relative z-10"></div>
             {!hideNavbar && <Navbar />}
             <div>
                 <Routes>

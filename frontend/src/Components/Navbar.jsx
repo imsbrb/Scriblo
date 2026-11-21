@@ -1,16 +1,21 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { PlusIcon, Trash2Icon, UsersIcon } from "lucide-react";
 import { isLoggedIn, logout } from "../lib/utils";
+
 const Navbar = () => {
     const handleLogout = () => {
         logout(); // clears token and redirects to /login
     };
+
     return (
-        <header className="bg-base-300 border-b border-base-content/10">
-            <div className="mx-auto max-w-6xl p-4">
-                <div className="flex items-center justify-between">
-                    <Link to="/HomePage" className="text-3xl font-bold text-primary font-mono tracking-tight">Scriblo</Link>
-                    <div className="flex items-center gap-4">
+        <header className="bg-base-100 border-b-4 border-black">
+            <div className="mx-auto max-w-6xl px-4 py-3">
+                <div className="flex items-center justify-between gap-4">
+                    <Link to="/HomePage" className="font-display text-4xl leading-none">
+                        Scriblo
+                    </Link>
+
+                    <div className="flex items-center gap-2 sm:gap-3">
                         {isLoggedIn() ? (
                             <>
                                 <Link to={"/create"} className="btn btn-primary">
@@ -31,12 +36,8 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="btn btn-outline">
-                                    Login
-                                </Link>
-                                <Link to="/signup" className="btn btn-outline">
-                                    Signup
-                                </Link>
+                                <Link to="/login" className="btn btn-outline">Login</Link>
+                                <Link to="/signup" className="btn btn-outline">Signup</Link>
                             </>
                         )}
                     </div>
