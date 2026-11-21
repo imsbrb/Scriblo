@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
-    CheckIcon, ChevronsLeftIcon, ChevronsRightIcon, FolderIcon, FolderPlusIcon,
-    InboxIcon, NotebookIcon, PencilIcon, Trash2Icon, XIcon,
+    CheckIcon, ChevronsLeftIcon, ChevronsRightIcon, FolderIcon, FolderPlusIcon, NotebookIcon, PencilIcon, Trash2Icon, XIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../lib/axios";
@@ -99,7 +98,7 @@ const FolderSidebar = ({ folders, selected, onSelect, onFoldersChanged }) => {
                 <div className={`flex items-center w-full ${open ? "justify-between" : "justify-center"}`}>
                     {open && (
                         <h2 className="text-2xl leading-none">
-                            Folders <span className="font-sans text-sm font-semibold align-middle">({folders.length})</span>
+                            My Notes <span className="font-sans text-sm font-semibold align-middle">({folders.length})</span>
                         </h2>
                     )}
                     <button
@@ -115,7 +114,6 @@ const FolderSidebar = ({ folders, selected, onSelect, onFoldersChanged }) => {
 
                 <ul className="w-full space-y-1">
                     <Item value="" icon={NotebookIcon} label="All notes" />
-                    <Item value="none" icon={InboxIcon} label="No folder" />
                 </ul>
 
                 <div className="w-full border-t-2 border-dashed border-black" />

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { PlusIcon, Trash2Icon, UsersIcon } from "lucide-react";
+import { HomeIcon, Trash2Icon, UsersIcon } from "lucide-react";
 import { isLoggedIn, logout } from "../lib/utils";
 
 const Navbar = () => {
@@ -18,9 +18,9 @@ const Navbar = () => {
                     <div className="flex items-center gap-2 sm:gap-3">
                         {isLoggedIn() ? (
                             <>
-                                <Link to={"/create"} className="btn btn-primary">
-                                    <PlusIcon className="size-5" />
-                                    <span>New Note</span>
+                                <Link to={"/HomePage"} className="btn btn-primary">
+                                    <HomeIcon className="size-5" />
+                                    <span>Home</span>
                                 </Link>
                                 <Link to={"/shared"} className="btn btn-ghost">
                                     <UsersIcon className="size-5" />

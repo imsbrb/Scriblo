@@ -3,11 +3,23 @@ import RateLimitedUI from "../Components/RateLimitingUI";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import NoteCard from "../Components/NoteCard";
-import NotesNotFound from "../Components/NotesNotFound";
 import FolderSidebar from "../Components/FolderSidebar";
 import NoteFilters from "../Components/NoteFilters";
 import Pagination from "../Components/Pagination";
+import { Link } from "react-router-dom";
+import { PlusIcon } from "lucide-react";
 const emptyFilters = { search: "", folder: "", tag: "", pinned: "", sort: "newest", page: 1 };
+const NewNoteCard = ({ message }) => (
+    <Link to="/create" className="card bg-base-100/40 backdrop-blur-sm transition-all duration-200">
+        <div className="card-body items-center justify-center text-center gap-3 min-h-48">
+            <span className="flex items-center justify-center size-14 bg-black text-white">
+                <PlusIcon className="size-8" />
+            </span>
+            <h3 className="card-title text-2xl">New Note</h3>
+            {message && <p className="text-base-content/70">{message}</p>}
+        </div>
+    </Link>
+);
 const HomePage = () => {
     const [isRateLimited, setIsRateLimited] = useState(false);
     const [notes, setNotes] = useState([]);
@@ -73,7 +85,6 @@ const HomePage = () => {
         fetchNotes();
         fetchTags();
     };
-    const filtersActive = filters.search || filters.folder || filters.tag || filters.pinned;
     return (
         <div className="min-h-screen">
             {isRateLimited && <RateLimitedUI />}
@@ -87,19 +98,18 @@ const HomePage = () => {
                 <main>
                     <NoteFilters filters={filters} tags={tags} onChange={updateFilters} />
                     {loading && <div className="text-center text-primary py-10">Loading notes...</div>}
-                    {!loading && notes.length === 0 && !isRateLimited && !filtersActive && <NotesNotFound
-                    />}
-                    {!loading && notes.length === 0 && !isRateLimited && filtersActive && (
-                        <div className="text-center py-16 space-y-4">
-                            <p className="text-base-content/70">No notes match these filters.</p>
-                            <button className="btn btn-outline btn-sm" onClick={() =>
-                                setFilters(emptyFilters)}>
-                                Clear filters
-                            </button>
+                    {!loading && notes.length === 0 && !isRateLimited && (
+                        <div className="flex justify-center py-10">
+                            <div className="w-full max-w-sm">
+                                <NewNoteCard message="You have no notes here" />
+                            </div>
                         </div>
                     )}
+
                     {notes.length > 0 && !isRateLimited && (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {/* "New Note" box, always the first box in the grid */}
+                            <NewNoteCard />
                             {notes.map((note) => (
                                 <NoteCard key={note._id} note={note} onChanged={handleNoteChanged} />
                             ))}
